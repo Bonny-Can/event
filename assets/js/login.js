@@ -29,37 +29,36 @@ $(function () {
 
 
     //监听注册表单的提交事件 
-    var data = { username: $('#form_reg [name=username]').val(), password: $('#form_reg [name=password]').val() };
+    var data = {
+        username: $('#form_reg [name=username]').val(), password: $('#form_reg [name=password]').val()
+    };
     $('#form_reg').on('submit', function (e) {
-        e.preventDefault()
-        e.post('/api/reguser', data, function (res) {
-            if (res.status !== 0) {
-                return layer.msg(res.message);
-            }
+        // 阻止默认行为
+        e.preventDefault();
+        // 发起post请求
+        $.post('/api/reguser', data, function (res) {
+            if (res.status !== 0) return layer.msg(res.message);
             layer.msg('注册成功,请登录!');
             // 模拟人的点击行为
-            $('#link-login').click()
+            $('#link-login').click();
         })
     })
     // 监听登录表单的提交事件
     $('#form_login').submit(function (e) {
         e.preventDefault();
         $.ajax({
-            type: "post",
+            method: "post",
             url: "/api/login",
             // 快速获取表单中的数据
             data: $(this).serialize(),
-            dataType: "dataType",
             success: function (res) {
-                if (res.status !== 0) {
-                    return layer.msg('登陆失败!')
-                }
-                layer.msg('登录成功!')
+                if (res.status !== 0) return layer.msg('登陆失败!');
+                layer.msg('登录成功!');
                 // 将登陆成功得到的 token 字符串,保存到localStorage中
                 localStorage.setItem('token', res.token);
                 // console.log(res.token);
                 // 跳转到后台主页
-                location.href = '/index.html'
+                location.href = '/index.html';
             }
         });
     })
